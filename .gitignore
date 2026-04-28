@@ -1,0 +1,17 @@
+# Python bytecode — generated automatically, never committed
+__pycache__/
+*.pyc
+*.pyo
+
+# Pytest cache — local only
+.pytest_cache/
+
+# Test reports — generated on each run, not source-controlled
+reports/
+
+# Virtual environment — each developer creates their own locally
+venv/
+.venv/
+
+# Environment config — contains secrets, never committed
+.env

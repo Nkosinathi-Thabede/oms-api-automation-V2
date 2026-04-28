@@ -1,0 +1,13 @@
+# Core testing dependencies
+pytest==8.1.1          # Test runner — industry standard for Python test suites
+pytest-html==4.1.1     # Generates self-contained HTML reports after each test run
+requests==2.31.0       # HTTP client — same mental model as Postman, just in code
+
+# Authentication
+pyjwt==2.8.0           # JWT token generation and verification
+
+# Mock server
+flask==3.0.3           # Lightweight web framework for the local OMS mock server
+
+# Utilities
+python-dotenv==1.0.1   # Loads environment variables from .env for config management
