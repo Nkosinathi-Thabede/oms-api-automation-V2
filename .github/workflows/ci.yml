@@ -1,0 +1,46 @@
+name: OMS API Automation
+
+# Trigger: run on every push to main or develop, and on pull requests to main
+# This ensures quality is enforced automatically — not just when someone
+# remembers to run tests locally
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1 — Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2 — Set up the correct Python version
+      # Pinned to 3.12 for reproducibility — same version used in development
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Step 3 — Install all dependencies from requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Step 4 — Run the full test suite
+      # The mock server starts automatically via conftest.py fixtures
+      # pytest.ini handles report generation and output formatting
+      - name: Run test suite
+        run: pytest
+
+      # Step 5 — Upload the HTML report as a build artifact
+      # 'if: always()' ensures the report is uploaded even if tests fail
+      # — this is critical because a failing run is when you most need the report
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: reports/report.html
