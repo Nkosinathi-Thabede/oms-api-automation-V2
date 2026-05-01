@@ -131,3 +131,22 @@ VALID_STATUSES = ["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"]
 # Invalid status values — used to verify the API rejects unknown statuses
 # Covers: wrong word, completely wrong, numeric string
 INVALID_STATUSES = ["DISPATCHED", "UNKNOWN", "123"]
+
+# Five-item order — used to verify total calculation across multiple line items
+# with different quantities and prices per item
+VALID_ORDER_FIVE_ITEMS = {
+    "customer_id": "CUST-005",
+    "items": [
+        {"sku": "ITEM-A", "quantity": 2, "price": 10.00},
+        {"sku": "ITEM-B", "quantity": 1, "price": 25.50},
+        {"sku": "ITEM-C", "quantity": 3, "price": 5.99},
+        {"sku": "ITEM-D", "quantity": 1, "price": 49.99},
+        {"sku": "ITEM-E", "quantity": 4, "price": 7.50},
+    ],
+    "shipping_address": {
+        "line1": "5 Test St",
+        "city": "Cape Town",
+        "postal_code": "8001",
+        "country": "ZA"
+    }
+}

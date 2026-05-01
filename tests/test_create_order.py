@@ -21,6 +21,7 @@ from framework.validators.response_validator import ResponseValidator
 from framework.auth.token_manager import TokenManager
 from test_data.order_payloads import (
     VALID_ORDER, VALID_ORDER_MULTI_ITEM, VALID_ORDER_SINGLE_ITEM,
+    VALID_ORDER_FIVE_ITEMS,
     MISSING_CUSTOMER_ID, MISSING_ITEMS, MISSING_SHIPPING_ADDRESS,
     EMPTY_ITEMS_LIST, ZERO_QUANTITY, NEGATIVE_PRICE
 )
@@ -128,6 +129,27 @@ class TestCreateOrderHappyPath:
         assert r1.json()["order_id"] != r2.json()["order_id"], (
             "Two separate orders received the same order_id — IDs must be unique"
         )
+    def test_create_order_five_item_total_is_correct(self, client):
+        """
+        Verify total calculation is correct across 5 line items
+        with different quantities and prices.
+        A miscalculation here means the customer is charged
+        the wrong amount — business critical.
+        """
+        response = client.post("/orders", VALID_ORDER_FIVE_ITEMS)
+        ResponseValidator(response).status_is(201)
+        body = response.json()
+        expected_total = sum(
+            item["quantity"] * item["price"]
+            for item in VALID_ORDER_FIVE_ITEMS["items"]
+        )
+        # Round to 2dp to handle floating point precision
+        # e.g. 3 x 5.99 = 17.969999999 in Python, not 17.97
+        assert round(body["total"], 2) == round(expected_total, 2), (
+            f"Expected total {expected_total}, got {body['total']}. "
+            f"Total calculation incorrect across 5 line items."
+        )
+
 
 
 class TestCreateOrderMissingFields:
